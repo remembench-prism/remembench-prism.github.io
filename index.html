@@ -51,6 +51,9 @@
       background-color: #f5f5f5;
       padding: 3rem 1.5rem;
     }
+    video {
+      border-radius: 8px;
+    }
   </style>
   <link rel="icon" href="./static/images/server-storage.png">
 
@@ -222,6 +225,40 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width is-four-fifths">
+        <h2 class="title is-3 has-text-centered">Real-World Rollouts</h2>
+        <div class="content has-text-justified">
+          <p>
+            We evaluate PRISM on a real-world adaptation of 'Wash and Return to Container' task from ReMemBench. 
+            Below is the visualization of two successful rollouts of PRISM.
+          </p>
+        </div>
+
+        <div class="columns is-vcentered">
+          <div class="column is-half has-text-centered">
+            <!-- <h4 class="title is-5 has-text-centered">Rollout 1</h4> -->
+            <video id="realworld-video-1" controls muted playsinline autoplay width="100%">
+              <source src="./static/rw_videos/rw1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="column is-half has-text-centered">
+            <!-- <h4 class="title is-5 has-text-centered">Rollout 2</h4> -->
+            <video id="realworld-video-2" controls muted playsinline autoplay width="100%">
+              <source src="./static/rw_videos/rw2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 </section>
 
