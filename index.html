@@ -114,64 +114,6 @@
   </div>
 </section>
 
-<!-- <section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
-
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
@@ -188,100 +130,104 @@
 </section>
 
 
-<!-- <section class="section">
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered">Method Overview</h2>
+        <div class="content has-text-justified">
+          <p>
+            PRISM applies gated attention to filter historical context and hierarchical architecture to scale attention over long interaction histories, improving causal transformer policies trained with
+            behavior cloning to handle noisy histories and reduce computation.
+          </p>
+        </div>
+        <div class="has-text-centered" style="margin-top: 2rem;">
+          <img src="./static/images/architecture.png" alt="PRISM Architecture" style="max-width: 100%; height: auto;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
   <div class="container is-max-desktop">
 
     <div class="columns is-centered">
 
-      <div class="column is-full-width">
-        <h2 class="title is-3">ReMemBench Categories</h2>
+      <div class="column is-full-width is-four-fifths">
+        <h2 class="title is-3 has-text-centered">ReMemBench Categories</h2>
         <div class="content has-text-justified">
           <p>
-            ReMemBench consists of eight diverse household manipulation tasks spanning four categories of short-term memory.
+            ReMemBench is designed to evaluate short-term memory in visuomotor policies.
+            Guided by the cognitive science literature, we decompose short-term memory into several functional categories.
+            Diversity in categories promotes developments in general memory mechanisms and not
+            custom, non-generalizable solutions for a particular task. Each category is instantiated with two household-manipulation tasks.
+            Below are videos of each category.
           </p>
         </div>
 
-        <h3 class="title is-4">SPATIAL</h3>
+        <div class="has-text-centered" style="margin-bottom: 2rem;">
+          <button id="randomize-btn-top" class="button is-light is-small" style="font-size: 1.1rem;">Randomize Videos</button>
+        </div>
+
+        <h3 class="title is-4 has-text-centered">Spatial Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/spatial_task1.mp4" type="video/mp4">
+          <div class="column is-full-width has-text-centered">
+            <video id="spatial-video" controls muted playsinline width="75%">
+              <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p class="has-text-centered">Spatial Memory Task 1</p>
-          </div>
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/spatial_task2.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-            <p class="has-text-centered">Spatial Memory Task 2</p>
+            <p id="spatial-caption" class="has-text-centered"></p>
           </div>
         </div>
 
-        <h3 class="title is-4">PROSPECTIVE</h3>
+        <h3 class="title is-4 has-text-centered">Prospective Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/prospective_task1.mp4" type="video/mp4">
+          <div class="column is-full-width has-text-centered">
+            <video id="prospective-video" controls muted playsinline width="75%">
+              <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p class="has-text-centered">Prospective Memory Task 1</p>
-          </div>
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/prospective_task2.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-            <p class="has-text-centered">Prospective Memory Task 2</p>
+            <p id="prospective-caption" class="has-text-centered"></p>
           </div>
         </div>
 
-        <h3 class="title is-4">OBJECT-ASSOCIATIVE</h3>
+        <h3 class="title is-4 has-text-centered">Object-Associative Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/object_associative_task1.mp4" type="video/mp4">
+          <div class="column is-full-width has-text-centered">
+            <video id="object-associative-video" controls muted playsinline width="75%">
+              <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p class="has-text-centered">Object-Associative Memory Task 1</p>
-          </div>
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/object_associative_task2.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-            <p class="has-text-centered">Object-Associative Memory Task 2</p>
+            <p id="object-associative-caption" class="has-text-centered"></p>
           </div>
         </div>
 
-        <h3 class="title is-4">OBJECT-SET</h3>
+        <h3 class="title is-4 has-text-centered">Object-Set Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/object_set_task1.mp4" type="video/mp4">
+          <div class="column is-full-width has-text-centered">
+            <video id="object-set-video" controls muted playsinline width="75%">
+              <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p class="has-text-centered">Object-Set Memory Task 1</p>
+            <p id="object-set-caption" class="has-text-centered"></p>
           </div>
-          <div class="column is-half">
-            <video controls muted playsinline width="100%">
-              <source src="./static/videos/object_set_task2.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-            <p class="has-text-centered">Object-Set Memory Task 2</p>
-          </div>
+        </div>
+
+        <div class="has-text-centered" style="margin-top: 2rem;">
+          <button id="randomize-btn-bottom" class="button is-light is-small" style="font-size: 1.1rem;">Randomize Videos</button>
         </div>
 
       </div>
     </div>
 
   </div>
-</section> -->
+</section>
 
 <footer class="footer">
   <div class="container">
-    <div class="content has-text-centered">
+    <div class="content has-text-centered is-full-width">
       <a class="icon-link"
          href="./static/videos/nerfies_paper.pdf">
         <i class="fas fa-file-pdf"></i>
@@ -310,6 +256,130 @@
     </div>
   </div>
 </footer>
+
+<script>
+// Video mapping based on available files
+const videoCategories = {
+  spatial: [
+    {
+      file: 'MemFruitInSinkLeftFar_2025-07-13-15-44-32_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Fruit'
+    },
+    {
+      file: 'MemFruitInSinkRightFar_2025-07-15-15-07-57_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Fruit'
+    },
+    {
+      file: 'MemRetrieveOilsFromCounterLL_2025-09-20-22-49-27_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Oil'
+    },
+    {
+      file: 'MemRetrieveOilsFromCounterLR_2025-09-20-23-25-19_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Oil'
+    },
+    {
+      file: 'MemRetrieveOilsFromCounterRL_2025-09-20-23-06-15_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Oil'
+    },
+    {
+      file: 'MemRetrieveOilsFromCounterRR_2025-09-20-23-14-26_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Retrieve Oil'
+    }
+  ],
+  prospective: [
+    {
+      file: 'MemHeatPot_2025-07-24-22-26-20_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Cook Meat'
+    },
+    {
+      file: 'MemHeatPot_2025-07-25-15-56-53_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Cook Meat'
+    },
+    {
+      file: 'MemHeatPotMultiple_2025-09-20-20-35-24_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Cook Meat and Vegetable'
+    },
+    {
+      file: 'MemHeatPotMultiple_2025-09-20-21-35-46_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Cook Meat and Vegetable'
+    }
+  ],
+  'object-associative': [
+    {
+      file: 'MemWashAndReturnLeft_2025-07-25-00-12-14_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Wash and Return to Container'
+    },
+    {
+      file: 'MemWashAndReturnRight_2025-07-25-00-45-53_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Wash and Return to Container'
+    },
+    {
+      file: 'MemWashAndReturnSameLocation_2025-09-20-21-52-31_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Wash and Return to Original Spot'
+    },
+    {
+      file: 'MemWashAndReturnSameLocation_2025-09-20-22-11-00_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Wash and Return to Original Spot'
+    },
+    {
+      file: 'MemWashAndReturnSameLocation_2025-09-20-22-25-19_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Wash and Return to Original Spot'
+    }
+  ],
+  'object-set': [
+    {
+      file: 'MemPutKBreadInMicrowave_2025-07-25-10-40-55_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Microwave Breadsticks'
+    },
+    {
+      file: 'MemPutKBreadInMicrowave_2025-07-25-13-25-05_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Microwave Breadsticks'
+    },
+    {
+      file: 'MemPutKBreadInMicrowave_2025-07-25-14-50-59_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Microwave Breadsticks'
+    },
+    {
+      file: 'MemPutKBowlInCabinet_seed0_2025-09-19-23-10-47_6demo_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Relocate Bowls'
+    },
+    {
+      file: 'MemPutKBowlInCabinet_seed2_2025-09-20-00-42-49_30demo_concatenated_robot0_agentview_center_robot0_eye_in_hand.mp4',
+      caption: 'Relocate Bowls'
+    }
+  ]
+};
+
+function getRandomVideo(category) {
+  const videos = videoCategories[category];
+  if (!videos || videos.length === 0) return null;
+  return videos[Math.floor(Math.random() * videos.length)];
+}
+
+function updateVideo(category, videoElement, captionElement) {
+  const randomVideo = getRandomVideo(category);
+  if (randomVideo) {
+    videoElement.src = `./static/videos/${randomVideo.file}`;
+    captionElement.textContent = randomVideo.caption;
+  }
+}
+
+function randomizeAllVideos() {
+  updateVideo('spatial', document.getElementById('spatial-video'), document.getElementById('spatial-caption'));
+  updateVideo('prospective', document.getElementById('prospective-video'), document.getElementById('prospective-caption'));
+  updateVideo('object-associative', document.getElementById('object-associative-video'), document.getElementById('object-associative-caption'));
+  updateVideo('object-set', document.getElementById('object-set-video'), document.getElementById('object-set-caption'));
+}
+
+// Initialize videos on page load
+document.addEventListener('DOMContentLoaded', function() {
+  randomizeAllVideos();
+  
+  // Add click handlers for both randomize buttons
+  document.getElementById('randomize-btn-top').addEventListener('click', randomizeAllVideos);
+  document.getElementById('randomize-btn-bottom').addEventListener('click', randomizeAllVideos);
+});
+</script>
 
 </body>
 </html>
