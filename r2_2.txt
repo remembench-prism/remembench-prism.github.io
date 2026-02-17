@@ -1,0 +1,41 @@
+> W1: There is no comparison of ReMemBench with the Mikasa-Robo benchmark \[1\], which is specifically designed to test memory mechanisms in robotics.
+W3 The main experiments are conducted only on the benchmark proposed in the paper. Comparisons on existing benchmarks, such as Mikasa-Robo \[1\] and MemoryBench \[4\], are needed.
+
+In response to the reviewer’s request, we also evaluate PRISM on Mikasa-Robo. The results can be found on the website at [this link](https://remembench-prism.github.io/static/images/mikasa_robo_grid.png) or in Appendix Figure 7 of the updated manuscript. While PRISM improves performance on some tasks, such as InterceptSlow-v0 and RememColor5-v0, its overall performance is comparable to LSTM-based baselines on this benchmark. This contrasts with ReMemBench, where transformer-based models significantly outperform recurrent architectures (Table 2). We hypothesize this difference arises because Mikasa-Robo tasks (i) have substantially shorter horizons, approximately 180 timesteps compared to 2,800 timesteps in ReMemBench, (ii) contain fewer natural visual distractors, and (iii) concentrate most task-relevant information in the initial frames. As a result, Mikasa-Robo places less emphasis on sustained short-term memory over long horizons, which is the primary regime targeted by ReMemBench.
+
+MemoryBench \[4\] primarily targets a narrow form of spatial memory under controlled settings. In the original benchmark paper, SAM2Act+ achieves 84–100% success across its three tasks: Reopen Drawer ($84\\%$), Put Block Back ($100\\%$), and Rearrange Block ($99\\%$). These near-ceiling results leave limited headroom for differentiating methods or evaluating more general or long-horizon memory mechanisms. In contrast, ReMemBench comprises 8 tasks designed to probe broader short-term memory demands, including spatial, prospective, object-set, and object-associative memory, which are better aligned with the requirements of general-purpose robots.
+
+> W4 To ensure that the memory mechanism does not impair the model on simple tasks, evaluation on existing benchmarks, such as RLBench \[5\], LIBERO \[6\], and SimplerEnv \[7\], is critically important. Current results on RoboCasa are insufficient, especially when presented without the context of other approaches’ performance.
+
+To verify that our memory mechanism does not degrade performance on simpler tasks, we expanded our evaluation on RoboCasa by adding strong baselines (BC-Transformer, Diffusion Policy, and GR00T-N1-2B) and further report results across all LIBERO benchmarks. PRISM outperforms its no-memory variant by $+11\\%$ on RoboCasa and $+12\\%$ on LIBERO. It also surpasses strong pretrained baselines, including an absolute gain of $ \+11\\%$ over the large-scale VLA model GR00T-N1-2B finetuned on RoboCasa and $+16\\%$ over OpenVLA finetuned on LIBERO.
+
+These consistent gains show that short-term memory not only avoids harming performance on seemingly memory-less tasks but also actively improves it by providing additional task-relevant context and reducing action multimodality. While we cannot evaluate on other additional benchmarks due to computational constraints, the results on ReMemBench, RoboCasa, and LIBERO demonstrate that PRISM is broadly beneficial across both explicitly memory-dependent tasks and tasks that appear largely memory-less.
+
+| Method | RoboCasa (Success Rate) |
+| :---- | :---- |
+| BC-Transformer | 0.26 |
+| Diffusion Policy | 0.26 |
+| GR00T-N1-2B (pretrained \+ finetuned) | 0.32 |
+| PRISM (no memory) | 0.32 |
+| PRISM (n=256) | **0.43** |
+
+| Method | LIBERO 90 | LIBERO 10 | LIBERO Object | LIBERO Spatial | LIBERO Goal |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| OpenVLA | 0.62 | 0.54 | 0.88 | 0.85 | 0.79 |
+| Diffusion Policy | \- | 0.72 | **0.93** | 0.78 | 0.68 |
+| PRISM (no memory) | 0.77 | 0.75 | 0.89 | 0.85 | 0.61 |
+| PRISM (n=256) | **0.85** | **0.81** | **0.93** | **0.92** | **0.95** |
+
+> Detailed information on data collection and model training, which are necessary for reproducibility, is missing.
+
+We appreciate the reviewer’s emphasis on reproducibility. We commit to releasing the complete codebase. Model training details are provided in Appendix Section B, and training hyperparameters are in Table 3\.
+
+> How and in what quantity was the data collected for training?
+
+Training data were collected via human teleoperation: 50 trajectories per task, each spanning roughly 400-2800 timesteps. The details are included in the revised version of the manuscript (Section B).
+
+> Do the training details in Section B of the appendix apply only to PRISM, or to all baselines?
+
+They apply to **all** models. For fairness, we use the same training pipeline, optimizer, and hyperparameters for PRISM and baselines.
+
+We have incorporated the changes in the manuscript and are happy to further clarify any concerns. We appreciate the reviewer’s effort and would be grateful for any reassessment in light of the clarifications and results.

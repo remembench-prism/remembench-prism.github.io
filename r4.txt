@@ -1,0 +1,60 @@
+We thank the reviewer for their encouraging feedback, particularly for recognizing the cognitively grounded decomposition of short-term memory in ReMemBench and the value of encouraging general-purpose memory mechanisms. We also appreciate the positive assessment of PRISM’s consistent performance gains and the importance of the real-world validation. Below, we address each of the reviewer’s concerns and provide all the suggested analyses.
+
+> W1: Insufficient ablation of key hyperparameters. Specifically, no ablation on the compression factor
+
+The compression factor allows us to control the resource utilization. In our initial experiments, we found a compression ratio of $m \\approx 200$ to be a practical operating point (by compressing all tokens from the current timestep). Below, we compare performance and normalized compute/memory trade-offs for $m \\approx 80$, $m \\approx 9$, and $m \\approx 2$. Note that with $m \\approx 2$, we found it difficult to obtain enough gradient steps to achieve reasonable performance within our budget of $384$ H100 GPU hours per experiment.
+
+As the compression factor increases (i.e., more aggressive compression), we observe a modest but consistent improvement in average performance across tasks, although per-task results remain noisy and do not exhibit a single monotonic trend. On the other hand, the gains in compute and memory efficiency are consistent and pronounced, as highlighted in Appendix Figure 8 of revised manuscript (or on the website via [this link](https://remembench-prism.github.io/static/images/compression_peak_gpu_time.png)), with $m \\approx 200$ achieving a reduction of $13\\%$ in compute and $56\\%$ in peak GPU memory compared to $m \\approx 2$, measured at a sequence length of $512$.  Details of the calculation of $m$ are provided in Appendix Section B.
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| $m\\approx2$ | 0.3 | 0.4 | **0.28** | 0.24 | 0.31 |
+| $m\\approx9$ | **0.40** | 0.56 | 0.24 | **0.40** | 0.40 |
+| $m\\approx80$ | **0.40** | 0.60 | 0.24 | **0.40** | 0.41 |
+| $m\\approx200$ (PRISM) | **0.40** | **0.80** | 0.25 | 0.35 | **0.45** |
+
+> W2: Presentation and formatting issues. The following issues raise concerns about the overall polish and readiness of the submission:
+\- Figure-text overlap around lines 422-423 suggests rushed preparation
+\- Broken citation for CrossMAE (line 675-676: "\_CrossMAE\_ (?)")
+
+We thank the reviewer for carefully identifying these presentation issues and apologize for the oversight. The figure-text overlap and the broken CrossMAE citation have been corrected in the revised manuscript.
+
+> W3: Unclear future direction on long-term memory: The paper defines long-term memory as "cross-episode retrieval" (line 479-482) but provides insufficient explanation of how this would function in their framework. The distinction between short-term (within-episode) and long-term (cross-episode) memory deserves clearer articulation, particularly regarding whether the authors envision something like retrieval-augmented generation for robotics or continual learning scenarios with replay buffers.
+
+In our framework, **short-term memory** refers to information retained over a recent, finite window of experience \[1\]. Concretely, we maintain a short-term memory of approximately the past two minutes of sensory–motor history. During evaluation, this memory is reset at the start of each episode.
+
+By contrast, **long-term memory** refers to information that persists over much longer timescales, such as hours, days, or even the lifetime of the system \[1\]. We envision a framework where information from short-term memory can be **consolidated** into a long-term store and later **retrieved** back into short-term memory when relevant. This long-term memory could be implemented as external storage (e.g., replay buffers) and/or embedded in slowly updated model parameters via continual learning.
+
+When needed, retrieved long-term information is reintroduced into the robot’s short-term memory and processed alongside current observations to inform action prediction. This design is inspired by classical models of human memory \[1\]. **Importantly, a high-capacity short-term memory remains necessary for rapidly integrating recent sensory-motor experience and retrieved information for decision-making.**
+
+We have clarified this conceptual distinction and its role in our framework in the revised manuscript.
+
+> Q1: The paper categorizes short-term memory into four types (spatial, prospective, object-associative, object-set) based on cognitive science literature. Are these four categories exhaustive, or are they a representative subset of a broader taxonomy? Could you clarify whether REMEMBENCH aims to cover all major categories of short-term memory relevant to robotics, or if additional categories might be added in future work? What criteria from cognitive science guided the selection of these specific four categories?
+
+The four categories do not constitute an exhaustive taxonomy of short-term memory. Instead, they represent a grounded subset, chosen by taking direct inspiration from established experimental paradigms in cognitive science that study human short-term memory (details in Sec. 4).
+
+The benchmark is **extensible**. Future versions can add new axes or their combinations, inspired by other human memory tests. Examples include:
+
+1. **Temporal-order memory**: remembering the order in which events or instructions occur.
+2. **Relational memory**: comparing recent, similar experiences and leveraging their relationships to make better predictions
+
+The selection of the current four categories was guided by three principles:
+
+1. **Direct grounding in well-studied human memory constructs** (spatial working memory, prospective memory, associative memory, and multi-object working memory), rather than ad-hoc task design.
+2. **Encouraging memory architectures that generalize across diverse demands**: using distinct categories (spatial, prospective, object-associative, object-set) pushes models toward general mechanisms rather than overfitting to a single memory type.
+3. **Embodied realizability with clear success criteria** in a realistic kitchen environment (navigation \+ manipulation with natural distractors).
+
+> Q2: Several tasks might potentially be solved without explicit memory through richer state representations. For example, in "Wash and Return to Container" (Fig.4), an observation function that detects wetness could disambiguate "just washed" vs. "needs washing" states, replacing the need to remember the washing action. Similarly, in "Cook Meat," a visual cue indicating stove temperature or cooking duration might substitute for remembering when the stove was turned on. This raises a fundamental question: what is the principled distinction between tasks that inherently require memory vs. tasks solvable through better perception/state engineering or other alternative techniques?
+
+Thank you for raising this important question. We agree that, in some cases, richer state representations could reduce reliance on explicit memory. However, even if perfect indicators were hand-engineered for one aspect of the state, the robot would still require memory for other critical dependencies. For example, in Wash and Return to Container, a wetness indicator could distinguish “just washed” from “about to wash,” but the robot must still remember which container the object originally came from and where that container was placed. Similarly, in Wash and Return to Same Location, the robot must recall the approximate location on the table where the object was first picked up, which is no longer directly observable after the scene has changed.
+
+More broadly, replacing memory with state engineering would require an ever-growing set of task-specific indicators, ranging from fine-grained properties such as container identity, container pose, wetness, and time since last interaction, to higher-level variables such as task progress and outcomes of prior attempts. Designing and maintaining such features across diverse objects, layouts, and tasks for general-purpose robots quickly becomes intractable. This mirrors trends in visual recognition, where hand-crafted features such as SIFT and HOG \[2,3\] were ultimately surpassed by end-to-end learned representations \[4\].
+
+We have added this discussion to the revised manuscript to clarify our motivation for focusing on learned memory mechanisms rather than increasingly complex hand-engineered state representations.
+
+\[1\] Atkinson & Shiffrin, *Human memory: A proposed system and its control processes*, 1968\.
+\[2\] Lowe, “Distinctive Image Features from Scale-Invariant Keypoints,” IJCV 2004\.
+\[3\] Dalal and Triggs, “Histograms of Oriented Gradients for Human Detection,” CVPR 2005\.
+\[4\] Krizhevsky et al., “ImageNet Classification with Deep Convolutional Neural Networks,” NeurIPS 2012\.
+
+We have incorporated the changes in the manuscript and are happy to further clarify any remaining questions or concerns. We sincerely appreciate the reviewer’s time and consideration and would be grateful for any reassessment in light of the additional clarifications and results.

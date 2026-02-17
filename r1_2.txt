@@ -1,0 +1,24 @@
+> 3- \[Out of curiosity, authors can skip this question\] Can the proposed method be extended to novel objects during test time? How much drop we expect if the task requires manipulating a novel object, not seen in training.
+
+We thank the reviewer for this suggestion and evaluated generalization to novel objects on the Retrieve Fruit task by training on object categories (e.g., banana and strawberry) and testing on unseen categories (e.g., apple and pear). We observe a $12\\%$ performance drop, from $64\\%$ to $52\\%$, indicating that object-level generalization remains a challenge. While this is not the paper's primary focus, we plan to include a “novel object” variant in the final release of ReMemBench. We view closing this performance gap, for example, via pretrained vision-language-action models or broader multi-task training on RoboCasa, as promising future work and believe this addition will be valuable to the community for studying generalization in long-horizon, memory-dependent tasks.
+
+> 4- Line 249: I am wondering if the design of g(x), like number of parameters or other designs rather than simple MLP can impact the final results.
+
+This is an important concern. The inevitable changes induced by g(x), such as adding parameters or non-linearities, could confound our claim that improvements stem from **filtering irrelevant information**.
+
+To understand the effect of the feature-wise gating mechanism from other confounding factors, we compare **blind gating** (86M parameters, sigmoid non-linearity) with **feature-wise gating** (90M parameters, sigmoid non-linearity) in Figure 5 (middle). Blind gating, instead of producing a per-feature gate, learns a single-value gate per layer and therefore has the same non-linearity and a similar number of parameters as PRISM (less than $5\\%$ extra). However, the performance gap between the two is stark: feature-wise gating yields a $**\+17\\%$** improvement, suggesting that the gains primarily arise from feature-wise information selection rather than other factors.
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| Blind Gating | 0.35 | 0.30 | 0.25 | 0.20 | 0.28 |
+| Feature Gating(PRISM) | **0.40** | **0.80** | **0.25** | **0.35** | **0.45** |
+
+\[1\] Y. Bengio, et al, "Learning long-term dependencies with gradient descent is difficult," *IEEE Transactions on Neural Networks*, 1994
+\[2\] C. Cheng, et al. "Diffusion policy: Visuomotor policy learning via action diffusion." *IJRR*, 2025\.
+\[3\] B. Johan, et al. "Gr00t n1: An open foundation model for generalist humanoid robots," *arXiv:2503.14734*, 2025\.
+\[4\] B. Jose, et al. "A careful examination of large behavior models for multitask dexterous manipulation." *arXiv:2507.05331*, 2025\.
+\[5\] F. Haoquan, et al. "Sam2act: Integrating visual foundation model with a memory architecture for robotic manipulation." *ICML*, 2025\.
+\[6\] T. Marcel, et al. "Learning Long-Context Diffusion Policies via Past-Token Prediction." *CoRL*, 2025\.
+\[7\] H. Le, et al. "Token dropping for efficient bert pretraining." *arXiv:2203.13240*, 2022\.
+
+We have incorporated the changes in the manuscript and are happy to further clarify any remaining questions or concerns. We sincerely appreciate the reviewer’s time and consideration, and would be grateful for any reassessment in light of the additional clarifications and results.

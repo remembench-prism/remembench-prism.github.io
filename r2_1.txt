@@ -1,0 +1,34 @@
+We thank the reviewer for their thoughtful feedback and for highlighting the importance of memory-augmented architectures for robotics, as well as the clarity of the paper, the new architecture and benchmark, and the real-robot experiments. Below, we address each of the reviewer’s concerns and provide the suggested analyses and experimental results.
+
+>  Q1: How does the task-type categorization in ReMemBench correspond to the memory types in Mikasa-Robo \[1\]?
+
+We thank the reviewer for highlighting this recent and relevant benchmark. ReMemBench differs from Mikasa-Robo in several important ways:
+
+**Learning paradigm:** ReMemBench, with its human-teleoperated demonstrations, targets imitation learning under partial observability, whereas Mikasa-Robo primarily focuses on reinforcement learning.
+
+**Task scope and horizon:** ReMemBench spans both navigation and manipulation, involves multi-stage tasks, and operates over substantially longer horizons. Success typically requires recalling information beyond the initial frames, rather than simply “remembering the beginning.”
+
+**Memory taxonomy:** Mikasa-Robo organizes memory into four types: object, spatial, sequential, and capacity. ReMemBench overlaps with the object and spatial dimensions but additionally emphasizes object-associative and prospective memory, which are not explicitly captured in Mikasa-Robo. These categories target the recall of relationships between entities and the remembering of future-relevant information, thereby increasing the diversity of memory mechanisms under evaluation.
+
+**Environment complexity:** ReMemBench uses realistic kitchen environments with natural visual distractors, whereas Mikasa-Robo uses more controlled, task-centric simulated settings.
+
+These design choices lead to different performance trends across architectures, as reflected in our results. We have added an explicit discussion of Mikasa-Robo in the revised version.
+
+> W2 Only simple baselines, not designed for memory-dependent tasks, are used for comparison. Comparisons with specialized baselines, such as RATE \[2\] and GTrXL \[3\], are necessary.
+> Q2 How does the approach perform compared to strong baselines such as RATE \[2\] and GTrXL \[3\]?
+
+In response to the reviewer’s suggestion, we expanded our evaluation on ReMemBench to include several additional memory-focused architectures, specifically a linear-attention transformer (Linear-Attention), a segment-level recurrent transformer (TrXL), Gated Transformer-XL (GTrXL), and the Scene Memory Transformer (SMT). As in the original submission, we also include comparisons to Past Token Prediction (PTP) and non-transformer baselines such as LSTM and Mamba. The table below summarizes all baselines, with the first four rows covering recurrent architectures and the next four transformer-based ones. PRISM consistently outperforms all models, **including a $+19\\%$ improvement over GTrXL**, highlighting the benefit of combining learned gating with attention over both recurrent and standard transformer-based sequence models.
+
+Each experiment on ReMemBench requires roughly **384 H100 GPU-hours**, so a fully exhaustive study over additional recurrent architectures, such as **RATE,** would demand substantially more compute. We view a systematic comparison with RATE as valuable future work, but beyond the practical scope of this rebuttal.
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| LSTM | 0.14 | 0.04 | 0.12 | 0.04 | 0.09 |
+| Mamba | 0.04 | 0.34 | 0.07 | 0.08 | 0.13 |
+| TrXL | 0.06 | 0.28 | 0.12 | 0.12 | 0.15 |
+| GTrXL | 0.20 | 0.30 | 0.30 | 0.24 | 0.26 |
+| Linear-Attention | 0.10 | 0.40 | 0.20 | 0.18 | 0.22 |
+| PTP | 0.14 | 0.34 | 0.06 | 0.06 | 0.15 |
+| Standard Transformer | 0.12 | 0.44 | 0.2 | 0.2 | 0.24 |
+| Scene Memory Transformer | **0.50** | 0.4 | 0.26 | 0.28 | 0.36 |
+| PRISM | 0.40 | **0.80** | **0.25** | **0.35** | **0.45** |

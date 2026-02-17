@@ -1,0 +1,32 @@
+We thank the reviewer for their encouraging feedback, particularly for recognizing the cognitively grounded decomposition of short-term memory in ReMemBench and the value of encouraging general-purpose memory mechanisms. We also appreciate the positive assessment of PRISM’s consistent performance gains and the importance of the real-world validation. Below, we address each of the reviewer’s concerns and provide all the suggested analyses.
+
+> W1: Insufficient ablation of key hyperparameters. Specifically, no ablation on the compression factor
+
+The compression factor allows us to control the resource utilization. In our initial experiments, we found a compression ratio of $m \\approx 200$ to be a practical operating point (by compressing all tokens from the current timestep). Below, we compare performance and normalized compute/memory trade-offs for $m \\approx 80$, $m \\approx 9$, and $m \\approx 2$. Note that with $m \\approx 2$, we found it difficult to obtain enough gradient steps to achieve reasonable performance within our budget of $384$ H100 GPU hours per experiment.
+
+As the compression factor increases (i.e., more aggressive compression), we observe a modest but consistent improvement in average performance across tasks, although per-task results remain noisy and do not exhibit a single monotonic trend. On the other hand, the gains in compute and memory efficiency are consistent and pronounced, as highlighted in Appendix Figure 8 of revised manuscript (or on the website via [this link](https://remembench-prism.github.io/static/images/compression_peak_gpu_time.png)), with $m \\approx 200$ achieving a reduction of $13\\%$ in compute and $56\\%$ in peak GPU memory compared to $m \\approx 2$, measured at a sequence length of $512$.  Details of the calculation of $m$ are provided in Appendix Section B.
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| $m\\approx2$ | 0.3 | 0.4 | **0.28** | 0.24 | 0.31 |
+| $m\\approx9$ | **0.40** | 0.56 | 0.24 | **0.40** | 0.40 |
+| $m\\approx80$ | **0.40** | 0.60 | 0.24 | **0.40** | 0.41 |
+| $m\\approx200$ (PRISM) | **0.40** | **0.80** | 0.25 | 0.35 | **0.45** |
+
+> W2: Presentation and formatting issues. The following issues raise concerns about the overall polish and readiness of the submission:
+\- Figure-text overlap around lines 422-423 suggests rushed preparation
+\- Broken citation for CrossMAE (line 675-676: "\_CrossMAE\_ (?)")
+
+We thank the reviewer for carefully identifying these presentation issues and apologize for the oversight. The figure-text overlap and the broken CrossMAE citation have been corrected in the revised manuscript.
+
+> W3: Unclear future direction on long-term memory: The paper defines long-term memory as "cross-episode retrieval" (line 479-482) but provides insufficient explanation of how this would function in their framework. The distinction between short-term (within-episode) and long-term (cross-episode) memory deserves clearer articulation, particularly regarding whether the authors envision something like retrieval-augmented generation for robotics or continual learning scenarios with replay buffers.
+
+In our framework, **short-term memory** refers to information retained over a recent, finite window of experience \[1\]. Concretely, we maintain a short-term memory of approximately the past two minutes of sensory–motor history. During evaluation, this memory is reset at the start of each episode.
+
+By contrast, **long-term memory** refers to information that persists over much longer timescales, such as hours, days, or even the lifetime of the system \[1\]. We envision a framework where information from short-term memory can be **consolidated** into a long-term store and later **retrieved** back into short-term memory when relevant. This long-term memory could be implemented as external storage (e.g., replay buffers) and/or embedded in slowly updated model parameters via continual learning.
+
+When needed, retrieved long-term information is reintroduced into the robot’s short-term memory and processed alongside current observations to inform action prediction. This design is inspired by classical models of human memory \[1\]. **Importantly, a high-capacity short-term memory remains necessary for rapidly integrating recent sensory-motor experience and retrieved information for decision-making.**
+
+We have clarified this conceptual distinction and its role in our framework in the revised manuscript.
+
+

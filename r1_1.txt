@@ -1,0 +1,30 @@
+We thank the reviewer for recognizing the significance of our contributions, including the introduction of a new benchmark, the clarity and soundness of our presentation, the real-robot validation, and the strong empirical performance of our approach. Below, we address each of the reviewer’s concerns and provide all the suggested analyses and experimental results.
+
+> **Methodological novelty is minimal. For example, using attention mechanism to remove distractions in test time in imitation learning for visuomotor policies has been demonstrated before. For example: “Pay attention\!- robustifying a deep visuomotor policy through task-focused visual attention,” CVPR, 2019\.**
+
+Thank you for highlighting “Pay Attention\!” (CVPR 2019), which we have added to our related work section. That approach uses an LSTM to integrate temporal information; however, as our experiments show, LSTMs and other recurrent architectures struggle with credit assignment over long horizons, and in our benchmark, LSTM and Mamba baselines underperform transformer variants by 32–36 percentage points (Table 2). We therefore focus on transformer-based visuomotor policies and investigate how to equip them with effective short-term memory for long-horizon tasks.
+
+**Methodological novelty.** Rather than simply extending a transformer’s context window, which introduces spurious correlations and prohibitive compute/memory costs, we introduce (i) a post-retrieval, feature-wise gating module that suppresses irrelevant information and (ii) a hierarchical memory architecture that factorizes expensive attention into cheaper stages, enabling successful imitation on two-minute-long tasks, an order of magnitude longer than prior work \[5–6\]. To evaluate such mechanisms under partial observability, we introduce ReMemBench, a cognitively grounded benchmark spanning four distinct types of short-term memory, on which our method significantly outperforms state-of-the-art baselines.
+
+> 1- How the model can decide if everything from a timestamp is relevant and needs to be tokenized or part of it. And if this is configurable or automated (learned) by the model.
+
+PRISM stores all sensory inputs at 5 Hz, similar to standard transformer-based policies, without requiring manual timestep selection. Instead, relevance is determined during attention-based retrieval. The network first attends to candidate tokens via standard query-key matching, followed by a learned, post-retrieval feature-wise gating module that our experiments show is essential for filtering irrelevant information over long horizons (Figure 5, middle). The entire process is fully automated and trained end-to-end with the action-prediction loss, without any hand-crafted token-selection rules.
+
+> What is the impact of it? Meaning what if we have stricter attention mechanism that is very conservative in selecting information, vs having a more free flow of information into the memory? How does it impact the performance on the benchmarks?
+
+We explored stricter information flow by sharpening the attention distribution (i.e., scaling the attention logits so that fewer tokens carry most of the probability mass). More conservative information flow (larger scaling factors) led to a slight performance degradation ($-2%$ to $-10%$), while overly permissive attention ($\\text{factor} \= 0.125$) resulted in a large performance drop ($-42%$). These results indicate that controlling information flow is critical, a role explicitly handled by PRISM’s learned post-retrieval gating module rather than relying solely on attention.
+
+| $scale\\\_factor$\*$head\\\_dim^{1/2}$ | 0.125 | 0.25 | 0.5 | 1.0(PRISM) | 2.0 | 4.0 | 8.0 |
+| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
+| Retrieve Fruit | 0.22 | 0.54 | 0.54 | 0.64 | 0.64 | 0.54 | 0.62 |
+
+> 2- I am wondering if the authors tried applying noise to the attention mechanism during training to make it more resilient during test time.
+
+To evaluate robustness, we injected noise into the attention mechanism by randomly dropping tokens with probability $p=0.1$ \[7\]. This improves PRISM’s performance by  $+4%$. We also applied the same token-drop strategy to PRISM without gating. While both variants benefit from noisy attention, the full PRISM architecture continues to outperform the no-gating variant by $+10%$ (with attention drop) and $+19%$ (without attention drop). These results indicate that noise alone is helpful but insufficient, and that the learned gating module is crucial for suppressing spurious correlations.
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| PRISM w/o Gating | 0.08 | 0.35 | **0.30** | 0.30 | 0.26 |
+| PRISM w/o Gating (Attn Drop) | 0.44 | **0.80** | 0.10 | 0.20 | 0.39 |
+| PRISM | 0.40 | **0.80** | 0.25 | 0.35 | 0.45 |
+| PRISM (Attn Drop) | **0.60** | 0.64 | **0.30** | **0.40** | **0.49** |

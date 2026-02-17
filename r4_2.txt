@@ -1,0 +1,29 @@
+> Q1: The paper categorizes short-term memory into four types (spatial, prospective, object-associative, object-set) based on cognitive science literature. Are these four categories exhaustive, or are they a representative subset of a broader taxonomy? Could you clarify whether REMEMBENCH aims to cover all major categories of short-term memory relevant to robotics, or if additional categories might be added in future work? What criteria from cognitive science guided the selection of these specific four categories?
+
+The four categories do not constitute an exhaustive taxonomy of short-term memory. Instead, they represent a grounded subset, chosen by taking direct inspiration from established experimental paradigms in cognitive science that study human short-term memory (details in Sec. 4).
+
+The benchmark is **extensible**. Future versions can add new axes or their combinations, inspired by other human memory tests. Examples include:
+
+1. **Temporal-order memory**: remembering the order in which events or instructions occur.
+2. **Relational memory**: comparing recent, similar experiences and leveraging their relationships to make better predictions
+
+The selection of the current four categories was guided by three principles:
+
+1. **Direct grounding in well-studied human memory constructs** (spatial working memory, prospective memory, associative memory, and multi-object working memory), rather than ad-hoc task design.
+2. **Encouraging memory architectures that generalize across diverse demands**: using distinct categories (spatial, prospective, object-associative, object-set) pushes models toward general mechanisms rather than overfitting to a single memory type.
+3. **Embodied realizability with clear success criteria** in a realistic kitchen environment (navigation \+ manipulation with natural distractors).
+
+> Q2: Several tasks might potentially be solved without explicit memory through richer state representations. For example, in "Wash and Return to Container" (Fig.4), an observation function that detects wetness could disambiguate "just washed" vs. "needs washing" states, replacing the need to remember the washing action. Similarly, in "Cook Meat," a visual cue indicating stove temperature or cooking duration might substitute for remembering when the stove was turned on. This raises a fundamental question: what is the principled distinction between tasks that inherently require memory vs. tasks solvable through better perception/state engineering or other alternative techniques?
+
+Thank you for raising this important question. We agree that, in some cases, richer state representations could reduce reliance on explicit memory. However, even if perfect indicators were hand-engineered for one aspect of the state, the robot would still require memory for other critical dependencies. For example, in Wash and Return to Container, a wetness indicator could distinguish “just washed” from “about to wash,” but the robot must still remember which container the object originally came from and where that container was placed. Similarly, in Wash and Return to Same Location, the robot must recall the approximate location on the table where the object was first picked up, which is no longer directly observable after the scene has changed.
+
+More broadly, replacing memory with state engineering would require an ever-growing set of task-specific indicators, ranging from fine-grained properties such as container identity, container pose, wetness, and time since last interaction, to higher-level variables such as task progress and outcomes of prior attempts. Designing and maintaining such features across diverse objects, layouts, and tasks for general-purpose robots quickly becomes intractable. This mirrors trends in visual recognition, where hand-crafted features such as SIFT and HOG \[2,3\] were ultimately surpassed by end-to-end learned representations \[4\].
+
+We have added this discussion to the revised manuscript to clarify our motivation for focusing on learned memory mechanisms rather than increasingly complex hand-engineered state representations.
+
+\[1\] Atkinson & Shiffrin, *Human memory: A proposed system and its control processes*, 1968\.
+\[2\] Lowe, “Distinctive Image Features from Scale-Invariant Keypoints,” IJCV 2004\.
+\[3\] Dalal and Triggs, “Histograms of Oriented Gradients for Human Detection,” CVPR 2005\.
+\[4\] Krizhevsky et al., “ImageNet Classification with Deep Convolutional Neural Networks,” NeurIPS 2012\.
+
+We have incorporated the changes in the manuscript and are happy to further clarify any remaining questions or concerns. We sincerely appreciate the reviewer’s time and consideration and would be grateful for any reassessment in light of the additional clarifications and results.

@@ -1,0 +1,25 @@
+We thank the reviewer for their thoughtful feedback and for highlighting our problem framing (IL under partial observability with targeted memory tasks), pragmatic design (feature-aware gating with hierarchical architecture), and empirical gains (improved performance and efficiency).
+
+In response to the request for stronger transformer-based and memory-aware baselines, we have added the following comparisons on ReMemBench. All methods use identical continuous action outputs, identical inputs and loss functions, matched parameter counts, and the same training pipeline and budget (384 H100 GPU-hours per experiment).
+
+| Method | Spatial | Prospective | Associative | Object-Set | Average |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| TrXL | 0.06 | 0.28 | 0.12 | 0.12 | 0.15 |
+| GTrXL | 0.20 | 0.30 | **0.30** | 0.24 | 0.26 |
+| Linear-Attention | 0.10 | 0.40 | 0.20 | 0.18 | 0.22 |
+| Transformer BC | 0.12 | 0.44 | 0.20 | 0.20 | 0.24 |
+| PRISM w/o Gating | 0.08 | 0.35 | **0.30** | 0.30 | 0.26 |
+| SMT-style | **0.50** | 0.4 | 0.26 | 0.28 | 0.36 |
+| PRISM | 0.40 | **0.80** | 0.25 | **0.35** | **0.45** |
+
+> **W1: Missing transformer IL baselines.** The paper compares PRISM only to LSTM, Mamba, and a PTP-trained baseline, but omits transformer-based IL policies tailored to partial observability (e.g., windowed causal Transformers, Transformer-XL/GTrXL, linear-attention Transformers). Without these, it is unclear whether PRISM outperforms standard transformer sequence models for IL-POMDPs.
+**Q1: Transformer baselines (continuous actions).** Please add: **(a)** Windowed Transformer BC; **(b)** Transformer-XL/GTrXL BC (segment length S, memory M); **(c)** a linear-attention Transformer BC. Use continuous outputs (Gaussian or diffusion), identical inputs/loss to PRISM, and match parameters, history length, and training budgets.
+
+We have added comparisons with (a) Windowed causal Transformer BC, (b) Transformer-XL (TrXL), (c) Gated Transformer-XL (GTrXL), and (d) Linear-Attention. Note that a naive Windowed Transformer requires a very large context window to solve these tasks. Without the hierarchical architecture, it is computationally expensive (Figure 6, main paper), so we report the best numbers achieved with the same computation budget as PRISM, i.e., 384 H100 GPU hours per experiment.
+
+All added baselines consistently underperform PRISM on ReMemBench. We attribute this primarily to well-known limitations of these architectures in long-horizon settings: recurrent models such as TrXL ($-30%$) and GTrXL ($-19%$) suffer from credit assignment over long sequences due to backpropagation through time \[1,2\], while Linear-Attention exhibits substantial forgetting ($-23%$) \[3\]. Additionally, windowed causal Transformers without a hierarchical design become computationally prohibitive, leading to fewer effective gradient updates within the same budget. Removing the gating mechanism from PRISM results in a $-19\\%$ absolute drop. Together, these results isolate PRISM’s key contributions: improved retrieval via feature-wise gating and efficient computation via a hierarchical architecture.
+
+> **Q2: Scene-memory variant.** On a small subset (e.g., one task per memory category), include an SMT-style global-memory baseline (global attention over stored observation embeddings) to bound accuracy/compute trade-offs relative to PRISM’s hierarchy.
+
+To address this, we added an SMT-style global memory baseline that forms a single trajectory embedding via learned pooling over stored observations. While computationally efficient, it often over-compresses temporally critical information, losing task-relevant details and hurting performance ($-9\\%$). This performance drop suggests that a single pooled memory is insufficient, and that PRISM’s hierarchical memory with stacked layers is better suited for long-horizon visuomotor control.
+

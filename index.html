@@ -54,6 +54,54 @@
     video {
       border-radius: 8px;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    table th, table td {
+      padding: 0.75rem;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+      text-align: center;
+    }
+    table td {
+      text-align: center;
+    }
+    .results-table-container {
+      overflow-x: auto;
+      margin: 2rem 0;
+    }
+    .results-table-container--stacked {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .results-table-container--scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+    }
+    .results-table-container--scroll table {
+      min-width: 960px;
+    }
+    .results-table-container--scroll table th,
+    .results-table-container--scroll table td {
+      white-space: nowrap;
+    }
+    .table-benchmark-name th {
+      font-size: 1.1rem;
+    }
+    .results-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: left;
+      margin-bottom: 0.75rem;
+    }
   </style>
   <link rel="icon" href="./static/images/server-storage.png">
 
@@ -123,9 +171,7 @@
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          Many robotic tasks demand short-term memory, whether it's retrieving objects that are no longer visible or turning off an appliance after a certain amount of time.
-          Yet, most visuomotor policies remain myopic, relying only on immediate sensory input without leveraging past experiences to guide decisions.
-          We present PRISM, a transformer-based architecture for visuomotor policies to effectively use short-term memory via two key components: (i) gated attention, which selectively filters retrieved information to suppress irrelevant details, and (ii) a hierarchical architecture that first compresses local interactions into compact tokens and then integrates them to capture temporally extended dependencies. Together, these mechanisms enable us to scale short-term memory in visuomotor policies for up to two minutes at five frames per second, an order of magnitude longer than previous approaches. To systematically evaluate memory in visuomotor control, we introduce ReMemBench—a benchmark of eight diverse household manipulation tasks spanning four categories of short-term memory—designed to foster general memory mechanisms rather than siloed, task-specific solutions. PRISM consistently outperforms prior works, including transformer-based visuomotor policies with short-term memory, recurrent architectures, and other short-term memory-management strategies. Across ReMemBench and real-world evaluations, it achieves two times the success rate, and on the RoboCasa benchmark, it yields a 14 percentage points gain over the strongest baseline. Together, PRISM and ReMemBench establish a foundation for developing and evaluating short-term memory–augmented visuomotor policies that scale to long-horizon tasks.
+          Many robotic tasks require short-term memory, whether it’s retrieving an object that’s no longer visible or turning off an appliance after a set period. Yet, most visuomotor policies trained via imitation learning remain myopic, relying only on immediate sensory input without using past experiences to guide decisions. We present PRISM, a transformer-based architecture for visuomotor policies to effectively use short-term memory via two key components: (i) gated attention, which selectively filters retrieved information to suppress irrelevant details, improving performance by reducing the spurious correlations between the history and current action prediction, and (ii) a hierarchical architecture that first compresses local interactions into compact tokens and then integrates them to capture temporally extended dependencies, improving its compute and memory footprint. Together, these mechanisms enable us to scale short-term memory in visuomotor policies for up to two minutes, an order of magnitude longer than previous approaches. To systematically evaluate memory in visuomotor control, we introduce ReMemBench—a benchmark of eight diverse household manipulation tasks spanning four categories of short-term memory—designed to foster general memory mechanisms rather than siloed, task-specific solutions. PRISM consistently outperforms prior works, including transformer-based visuomotor policies with short-term memory, recurrent architectures, and other transformer variants—achieving an absolute improvement of 5%–12% over the strongest baseline in ReMemBench and real-world evaluations. On the standard RoBoCasa and LIBERO benchmarks, it achieves absolute improvements of 11%–15% over its no-memory variant and fine-tuned Vision-Language-Action baselines such as GR00T-N1-3B and OpenVLA, despite not leveraging any large-scale pretraining. Together, PRISM and ReMemBench establish a foundation for developing and evaluating short-term memory–augmented visuomotor policies that scale to long-horizon tasks.
         </div>
       </div>
     </div>
@@ -140,8 +186,7 @@
         <h2 class="title is-3 has-text-centered">Method Overview</h2>
         <div class="content has-text-justified">
           <p>
-            PRISM applies gated attention to filter historical context and hierarchical architecture to scale attention over long interaction histories, improving causal transformer policies trained with
-            behavior cloning to handle noisy histories and reduce computation.
+            PRISM applies gated attention to filter information retrieved from history and hierarchical summarization to scale attention over long interaction histories, improving causal transformer policies trained with behavior cloning by improving robustness to noisy histories and reducing computation.
           </p>
         </div>
         <div class="has-text-centered" style="margin-top: 2rem;">
@@ -176,45 +221,73 @@
 
         <h3 class="title is-4 has-text-centered">Spatial Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-full-width has-text-centered">
-            <video id="spatial-video" controls muted playsinline width="75%" autoplay loop>
+          <div class="column is-half has-text-centered">
+            <video id="spatial-video-1" controls muted playsinline width="100%" autoplay loop>
               <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p id="spatial-caption" class="has-text-centered"></p>
+            <p id="spatial-caption-1" class="has-text-centered"></p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video id="spatial-video-2" controls muted playsinline width="100%" autoplay loop>
+              <source src="" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p id="spatial-caption-2" class="has-text-centered"></p>
           </div>
         </div>
 
         <h3 class="title is-4 has-text-centered">Prospective Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-full-width has-text-centered">
-            <video id="prospective-video" controls muted playsinline width="75%" autoplay loop>
+          <div class="column is-half has-text-centered">
+            <video id="prospective-video-1" controls muted playsinline width="100%" autoplay loop>
               <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p id="prospective-caption" class="has-text-centered"></p>
+            <p id="prospective-caption-1" class="has-text-centered"></p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video id="prospective-video-2" controls muted playsinline width="100%" autoplay loop>
+              <source src="" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p id="prospective-caption-2" class="has-text-centered"></p>
           </div>
         </div>
 
         <h3 class="title is-4 has-text-centered">Object-Associative Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-full-width has-text-centered">
-            <video id="object-associative-video" controls muted playsinline width="75%" autoplay loop>
+          <div class="column is-half has-text-centered">
+            <video id="object-associative-video-1" controls muted playsinline width="100%" autoplay loop>
               <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p id="object-associative-caption" class="has-text-centered"></p>
+            <p id="object-associative-caption-1" class="has-text-centered"></p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video id="object-associative-video-2" controls muted playsinline width="100%" autoplay loop>
+              <source src="" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p id="object-associative-caption-2" class="has-text-centered"></p>
           </div>
         </div>
 
         <h3 class="title is-4 has-text-centered">Object-Set Memory</h3>
         <div class="columns is-vcentered">
-          <div class="column is-full-width has-text-centered">
-            <video id="object-set-video" controls muted playsinline width="75%" autoplay loop>
+          <div class="column is-half has-text-centered">
+            <video id="object-set-video-1" controls muted playsinline width="100%" autoplay loop>
               <source src="" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <p id="object-set-caption" class="has-text-centered"></p>
+            <p id="object-set-caption-1" class="has-text-centered"></p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video id="object-set-video-2" controls muted playsinline width="100%" autoplay loop>
+              <source src="" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p id="object-set-caption-2" class="has-text-centered"></p>
           </div>
         </div>
 
@@ -254,6 +327,267 @@
               <source src="./static/rw_videos/rw2.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered">Results Overview</h2>
+        
+        <div style="margin-bottom: 4rem;">
+          <h3 class="results-question">How does PRISM compare to prior works on imitation learning with partial observability?</h3>
+          <div class="content has-text-justified">
+            <p>
+              PRISM significantly outperforms prior approaches on ReMemBench, achieving 41% average success rate compared to Long Short-Term Memory (12%), Mamba (25%), Transformer XL (15%), Gated Transformer XL (26%), Linear Attention (22%), Past-Token Prediction (15%), and Scene Memory Transformer (36%). 
+              Recurrent models struggle with long-horizon credit assignment due to vanishing gradients, while attention-based methods fail to effectively filter irrelevant information from memory.
+            </p>
+          </div>
+          
+          <div class="results-table-container results-table-container--scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th rowspan="2">Group</th>
+                  <th rowspan="2">Method</th>
+                  <th colspan="4">ReMemBench Task Categories</th>
+                  <th rowspan="2">Avg</th>
+                </tr>
+                <tr>
+                  <th>Spatial</th>
+                  <th>Prospective</th>
+                  <th>Object-Associative</th>
+                  <th>Object-Set</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="8">ReMemBench (Four Tasks)</td>
+                  <td>Long Short-Term Memory</td>
+                  <td>0.12</td>
+                  <td>0.10</td>
+                  <td>0.12</td>
+                  <td>0.13</td>
+                  <td>0.12 ± 0.04</td>
+                </tr>
+                <tr>
+                  <td>Mamba</td>
+                  <td>0.20</td>
+                  <td>0.30</td>
+                  <td>0.23</td>
+                  <td>0.27</td>
+                  <td>0.25 ± 0.05</td>
+                </tr>
+                <tr>
+                  <td>Transformer XL</td>
+                  <td>0.15</td>
+                  <td>0.13</td>
+                  <td>0.17</td>
+                  <td>0.15</td>
+                  <td>0.15 ± 0.02</td>
+                </tr>
+                <tr>
+                  <td>Gated Transformer XL</td>
+                  <td>0.23</td>
+                  <td>0.30</td>
+                  <td>0.25</td>
+                  <td>0.27</td>
+                  <td>0.26 ± 0.03</td>
+                </tr>
+                <tr>
+                  <td>Linear Attention</td>
+                  <td>0.20</td>
+                  <td>0.23</td>
+                  <td>0.22</td>
+                  <td>0.23</td>
+                  <td>0.22 ± 0.02</td>
+                </tr>
+                <tr>
+                  <td>Past-Token Prediction</td>
+                  <td>0.15</td>
+                  <td>0.13</td>
+                  <td>0.17</td>
+                  <td>0.15</td>
+                  <td>0.15 ± 0.02</td>
+                </tr>
+                <tr>
+                  <td>Scene Memory Transformer</td>
+                  <td>0.41</td>
+                  <td>0.33</td>
+                  <td>0.33</td>
+                  <td>0.33</td>
+                  <td>0.36 ± 0.04</td>
+                </tr>
+                <tr>
+                  <td><strong>PRISM</strong></td>
+                  <td>0.33</td>
+                  <td>0.77</td>
+                  <td>0.33</td>
+                  <td>0.22</td>
+                  <td><strong>0.41 ± 0.04</strong></td>
+                </tr>
+                <tr>
+                  <td rowspan="3">ReMemBench (ALL)</td>
+                  <td>Past-Token Prediction</td>
+                  <td>0.15</td>
+                  <td>0.13</td>
+                  <td>0.17</td>
+                  <td>0.15</td>
+                  <td>0.16 ± 0.03</td>
+                </tr>
+                <tr>
+                  <td>SAM2Act++</td>
+                  <td>0.18</td>
+                  <td>0.15</td>
+                  <td>0.24</td>
+                  <td>0.30</td>
+                  <td>0.19 ± 0.03</td>
+                </tr>
+                <tr>
+                  <td><strong>PRISM</strong></td>
+                  <td><strong>0.39</strong></td>
+                  <td><strong>0.43</strong></td>
+                  <td>0.23</td>
+                  <td>0.23</td>
+                  <td><strong>0.32 ± 0.08</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="has-text-centered" style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+              <strong>Table II:</strong> Success rate across ReMemBench task categories (20 trials × 3 seeds). 
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 4rem;">
+          <h3 class="results-question">How much improvement does PRISM provide on standard benchmarks that do not explicitly test memory?</h3>
+          <div class="content has-text-justified">
+            <p>
+              PRISM with memory (n=256) demonstrates substantial improvements on standard visuomotor benchmarks, even when memory is not explicitly required. 
+              On RoboCasa, PRISM improves from 32% (no memory) to 43% (+11 points), also exceeding GR00T-N1-2B by 11 points. 
+              On LIBERO, PRISM achieves an average success rate of 89%, improving by 12 points over its no-memory variant (77%) and outperforming Open Vision-Language-Action by 15 points, indicating that short-term memory helps disambiguate visually identical states requiring different actions.
+            </p>
+          </div>
+          
+          <div style="margin-top: 2rem;">
+            <div class="column is-full">
+              <div class="results-table-container results-table-container--stacked">
+                <table>
+                  <thead>
+                    <tr class="table-benchmark-name">
+                      <th colspan="2">RoboCasa</th>
+                    </tr>
+                    <tr>
+                      <th>Method</th>
+                      <th>Success Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>GR00T-N1-2B</td>
+                      <td>0.32</td>
+                    </tr>
+                    <tr>
+                      <td>Diffusion Policy</td>
+                      <td>0.26</td>
+                    </tr>
+                    <tr>
+                      <td>PRISM (no memory)</td>
+                      <td>0.32</td>
+                    </tr>
+                    <tr>
+                      <td><strong>PRISM (n=256)</strong></td>
+                      <td><strong>0.43</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="column is-full">
+              <div class="results-table-container results-table-container--stacked">
+                <table>
+                  <thead>
+                    <tr class="table-benchmark-name">
+                      <th colspan="7">LIBERO</th>
+                    </tr>
+                    <tr>
+                      <th>Method</th>
+                      <th>LIBERO-90</th>
+                      <th>LIBERO-10</th>
+                      <th>Object</th>
+                      <th>Spatial</th>
+                      <th>Goal</th>
+                      <th>Avg</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Open Vision-Language-Action</td>
+                      <td>0.62</td>
+                      <td>0.54</td>
+                      <td>0.88</td>
+                      <td>0.85</td>
+                      <td>0.79</td>
+                      <td>0.74</td>
+                    </tr>
+                    <tr>
+                      <td>Diffusion Policy</td>
+                      <td>–</td>
+                      <td>0.72</td>
+                      <td>0.93</td>
+                      <td>0.78</td>
+                      <td>0.68</td>
+                      <td>–</td>
+                    </tr>
+                    <tr>
+                      <td>PRISM (no memory)</td>
+                      <td>0.77</td>
+                      <td>0.75</td>
+                      <td>0.89</td>
+                      <td>0.85</td>
+                      <td>0.61</td>
+                      <td>0.77</td>
+                    </tr>
+                    <tr>
+                      <td><strong>PRISM (n=256)</strong></td>
+                      <td><strong>0.85</strong></td>
+                      <td><strong>0.81</strong></td>
+                      <td><strong>0.93</strong></td>
+                      <td><strong>0.92</strong></td>
+                      <td><strong>0.95</strong></td>
+                      <td><strong>0.89</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <p class="has-text-centered" style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+            <strong>Table III:</strong> Success rates on RoboCasa and LIBERO. 
+            PRISM with memory (n=256) outperforms its no-memory variant and strong pretrained baselines.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 4rem;">
+          <h3 class="results-question">How does PRISM's performance scale with increasing memory capacity?</h3>
+          <div class="content has-text-justified">
+            <p>
+              PRISM exhibits strong scalability with increasing memory size on ReMemBench, with success rate increasing by 0.26 as the memory window expands from n=1 to n=512. 
+              This continuous improvement without saturation demonstrates PRISM's ability to extract useful information from temporally extended memory, making it well-suited for tasks requiring reasoning over extended temporal horizons.
+            </p>
+          </div>
+          
+          <div class="has-text-centered" style="margin-top: 2rem;">
+            <img src="./static/images/increasing_memory.png" alt="Memory scalability results" style="max-width: 70%; height: auto; border-radius: 8px;">
+            <p class="has-text-centered" style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+              Performance scaling with increasing memory capacity (n=1 to n=512).
+            </p>
           </div>
         </div>
 
@@ -393,6 +727,16 @@ function getRandomVideo(category) {
   return videos[Math.floor(Math.random() * videos.length)];
 }
 
+function getTwoRandomVideos(category) {
+  const videos = videoCategories[category];
+  if (!videos || videos.length === 0) return [null, null];
+  if (videos.length === 1) return [videos[0], videos[0]];
+  const i = Math.floor(Math.random() * videos.length);
+  let j = Math.floor(Math.random() * videos.length);
+  while (j === i) j = Math.floor(Math.random() * videos.length);
+  return [videos[i], videos[j]];
+}
+
 function updateVideo(category, videoElement, captionElement) {
   const randomVideo = getRandomVideo(category);
   if (randomVideo) {
@@ -401,11 +745,31 @@ function updateVideo(category, videoElement, captionElement) {
   }
 }
 
+function updateTwoVideos(category, video1, caption1, video2, caption2) {
+  const [v1, v2] = getTwoRandomVideos(category);
+  if (v1) {
+    video1.src = `./static/videos/${v1.file}`;
+    caption1.textContent = v1.caption;
+  }
+  if (v2) {
+    video2.src = `./static/videos/${v2.file}`;
+    caption2.textContent = v2.caption;
+  }
+}
+
 function randomizeAllVideos() {
-  updateVideo('spatial', document.getElementById('spatial-video'), document.getElementById('spatial-caption'));
-  updateVideo('prospective', document.getElementById('prospective-video'), document.getElementById('prospective-caption'));
-  updateVideo('object-associative', document.getElementById('object-associative-video'), document.getElementById('object-associative-caption'));
-  updateVideo('object-set', document.getElementById('object-set-video'), document.getElementById('object-set-caption'));
+  updateTwoVideos('spatial',
+    document.getElementById('spatial-video-1'), document.getElementById('spatial-caption-1'),
+    document.getElementById('spatial-video-2'), document.getElementById('spatial-caption-2'));
+  updateTwoVideos('prospective',
+    document.getElementById('prospective-video-1'), document.getElementById('prospective-caption-1'),
+    document.getElementById('prospective-video-2'), document.getElementById('prospective-caption-2'));
+  updateTwoVideos('object-associative',
+    document.getElementById('object-associative-video-1'), document.getElementById('object-associative-caption-1'),
+    document.getElementById('object-associative-video-2'), document.getElementById('object-associative-caption-2'));
+  updateTwoVideos('object-set',
+    document.getElementById('object-set-video-1'), document.getElementById('object-set-caption-1'),
+    document.getElementById('object-set-video-2'), document.getElementById('object-set-caption-2'));
 }
 
 // Initialize videos on page load
